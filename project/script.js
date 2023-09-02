@@ -35,13 +35,26 @@ function fetchAndSavePushes() {
     axios.get(apiUrl, { headers })
         .then((response) => {
             // Ha a kérés sikeres, a válaszban kapott értesítéseket JSON formátumban letölti.
-            const pushesData = response.data.pushes;
-            const jsonBlob = new Blob([JSON.stringify(pushesData, null, 2)], { type: 'application/json' });
-            const downloadLink = document.createElement('a');
-            downloadLink.href = URL.createObjectURL(jsonBlob);
-            downloadLink.download = 'pushes.json';
-            downloadLink.click();
 
+        
+    // Az API válaszából kinyeri az értesítések adatait és elmenti pushesData változóba.
+    const pushesData = response.data.pushes;
+
+    // Létrehoz egy Blob (Binary Large Object) objektumot, amely tartalmazza az értesítések adatait JSON formátumban.
+    // A "null, 2" azért van, hogy a JSON adat szépen formázott legyen, 2 szóközzel behúzva.
+    const jsonBlob = new Blob([JSON.stringify(pushesData, null, 2)], { type: 'application/json' });
+
+    // Létrehoz egy <a> elemet (hivatkozást), amelyet később használunk a letöltéshez.
+    const downloadLink = document.createElement('a');
+
+    // Beállítja a hivatkozás (href) értékét az előzőleg létrehozott JSON Blob URL-jére.
+    downloadLink.href = URL.createObjectURL(jsonBlob);
+
+    // Megadja a fájlnévet, amellyel a felhasználó a letöltést elmenti.
+    downloadLink.download = 'pushes.json';
+
+    // Kiváltja a hivatkozásra való kattintást, ami elindítja a letöltést.
+    downloadLink.click();
         })
         .catch((error) => {
             // Ha hiba történik a lekérdezés során, megjelenik egy hibaüzenet.
